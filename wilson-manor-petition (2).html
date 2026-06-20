@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wilson Manor — SGM Owners' Petition</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+  :root{
+    --navy:#1F3C73;
+    --navy-deep:#142a55;
+    --parchment:#F6F1E6;
+    --parchment-deep:#EDE4D0;
+    --ink:#23252b;
+    --ink-soft:#5b5f6a;
+    --brass:#A9802F;
+    --brass-light:#C9A24E;
+    --line:#D9CBA8;
+    --good:#3D7A4F;
+    --bad:#9A3B3B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--parchment);
+    background-image:
+      radial-gradient(circle at 10% 0%, rgba(31,60,115,0.05), transparent 40%),
+      radial-gradient(circle at 90% 100%, rgba(169,128,47,0.07), transparent 45%);
+    color:var(--ink);
+    font-family:'Source Sans 3', sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 18px 80px;}
+
+  /* ---------- Header ---------- */
+  header{text-align:center;margin-bottom:18px;}
+  .crest{width:64px;height:auto;margin-bottom:6px;filter:drop-shadow(0 1px 0 rgba(0,0,0,0.08));}
+  h1{
+    font-family:'Playfair Display', serif;
+    font-weight:800;
+    font-size:28px;
+    color:var(--navy-deep);
+    margin:4px 0 2px;
+    letter-spacing:0.2px;
+  }
+  .subtitle{
+    font-size:14px;
+    color:var(--ink-soft);
+    letter-spacing:0.6px;
+    text-transform:uppercase;
+    font-weight:600;
+  }
+  .hairline{
+    border:none;border-top:1px solid var(--line);
+    margin:18px 0;
+  }
+
+  /* ---------- Seal gauge ---------- */
+  .seal-card{
+    background:linear-gradient(180deg,#fff,var(--parchment-deep));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:22px;
+    box-shadow:0 1px 2px rgba(0,0,0,0.04);
+  }
+  .seal{
+    position:relative;
+    width:92px;height:92px;flex:none;
+  }
+  .seal svg{transform:rotate(-90deg);}
+  .seal-pct{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    color:var(--navy-deep);
+  }
+  .seal-pct .num{font-size:21px;line-height:1;}
+  .seal-pct .lbl{font-size:9px;letter-spacing:0.5px;color:var(--ink-soft);text-transform:uppercase;margin-top:2px;}
+  .seal-info{flex:1;}
+  .seal-info .headline{font-weight:700;font-size:15.5px;color:var(--ink);margin-bottom:3px;}
+  .seal-info .detail{font-size:13px;color:var(--ink-soft);}
+  .status-pill{
+    display:inline-block;margin-top:7px;
+    font-size:11.5px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;
+    padding:3px 10px;border-radius:20px;
+  }
+  .status-pill.pending{background:#EFE3C0;color:#7A5A12;}
+  .status-pill.reached{background:#DCEEDF;color:var(--good);}
+
+  /* ---------- Tabs ---------- */
+  .tabs{display:flex;gap:6px;margin-bottom:18px;}
+  .tab-btn{
+    flex:1;padding:11px 8px;border-radius:10px;border:1px solid var(--line);
+    background:#fff;color:var(--ink-soft);font-weight:600;font-size:14px;cursor:pointer;
+    font-family:'Source Sans 3',sans-serif;
+    transition:background .15s, color .15s, border-color .15s;
+  }
+  .tab-btn.active{background:var(--navy);border-color:var(--navy);color:#fff;}
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  /* ---------- Cards / forms ---------- */
+  .card{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:20px 20px 22px;margin-bottom:16px;
+  }
+  .card h2{
+    font-family:'Playfair Display',serif;font-size:18px;color:var(--navy-deep);
+    margin:0 0 4px;
+  }
+  .card p.help{font-size:13px;color:var(--ink-soft);margin:0 0 16px;}
+  label{display:block;font-size:12.5px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.3px;margin-bottom:6px;margin-top:14px;}
+  select, input[type=text], textarea{
+    width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;
+    font-size:15px;font-family:'Source Sans 3',sans-serif;background:#fffdf9;color:var(--ink);
+  }
+  select:focus, input:focus, textarea:focus{outline:2px solid var(--navy);outline-offset:1px;}
+  textarea{font-family:'JetBrains Mono',monospace;font-size:13px;min-height:160px;resize:vertical;}
+
+  .pq-readout{
+    margin-top:14px;background:var(--parchment);border:1px dashed var(--line);border-radius:8px;
+    padding:10px 12px;font-size:13.5px;color:var(--ink-soft);
+  }
+  .pq-readout b{color:var(--navy-deep);}
+
+  canvas#padCanvas{
+    width:100%;height:150px;border:1px solid var(--line);border-radius:8px;
+    background:#fffdf9;touch-action:none;display:block;cursor:crosshair;
+  }
+  .pad-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+  .pad-row .hint{font-size:12px;color:var(--ink-soft);}
+  .link-btn{background:none;border:none;color:var(--navy);font-weight:600;font-size:13px;cursor:pointer;padding:4px;}
+
+  .btn{
+    display:inline-block;width:100%;text-align:center;
+    background:var(--navy);color:#fff;border:none;border-radius:9px;
+    padding:13px;font-size:15.5px;font-weight:700;cursor:pointer;margin-top:18px;
+    font-family:'Source Sans 3',sans-serif;
+    transition:background .15s;
+  }
+  .btn:hover{background:var(--navy-deep);}
+  .btn:disabled{background:#b9bfc9;cursor:not-allowed;}
+  .btn.secondary{background:#fff;color:var(--bad);border:1px solid var(--bad);}
+  .btn.secondary:hover{background:#fbeaea;}
+  .btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--navy);}
+  .btn.ghost:hover{background:#EEF2F8;}
+
+  .notice{
+    border-radius:9px;padding:11px 13px;font-size:13.5px;margin-top:14px;
+  }
+  .notice.warn{background:#FBF0DD;color:#7A5A12;border:1px solid #EBD7A6;}
+  .notice.ok{background:#E2F1E5;color:var(--good);border:1px solid #BFE0C6;}
+  .notice.info{background:#E9EEF7;color:var(--navy-deep);border:1px solid #C9D5EA;}
+
+  /* ---------- Table ---------- */
+  table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13.5px;}
+  th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:0.3px;color:var(--ink-soft);font-weight:700;}
+  td.sig-cell svg{height:24px;width:70px;}
+  td.num{font-family:'JetBrains Mono',monospace;}
+  tr:last-child td{border-bottom:none;}
+  .empty-row td{color:var(--ink-soft);font-style:italic;text-align:center;padding:18px 0;}
+
+  .row2{display:flex;gap:10px;}
+  .row2 > div{flex:1;}
+
+  footer.note{
+    margin-top:26px;font-size:12px;color:var(--ink-soft);text-align:center;line-height:1.6;
+  }
+
+  @media (max-width:480px){
+    .seal-card{flex-direction:column;text-align:center;}
+  }
+
+  /* ---------- Print template (formal petition) ---------- */
+  #printTemplate{display:none;}
+  .print-crest{width:56px;display:block;margin:0 auto 6px;}
+  .print-header{text-align:center;margin-bottom:14px;}
+  .print-header h1{font-family:'Playfair Display',serif;font-size:22px;color:#1F3C73;margin:4px 0 2px;}
+  .print-header .ptitle{font-size:14px;font-weight:700;}
+  .print-header .pdate{font-size:11px;color:#5b5f6a;margin-top:4px;}
+  .print-body p{font-size:11.5px;line-height:1.5;margin:0 0 9px;color:#23252b;}
+  .print-motions{border:1px solid #1F3C73;border-radius:4px;padding:10px 12px;margin:10px 0 14px;font-size:11.5px;background:#F6F1E6;}
+  .print-motions p{margin:0 0 6px;}
+  .print-table{width:100%;border-collapse:collapse;margin-bottom:14px;}
+  .print-table th, .print-table td{border:1px solid #999;padding:5px 6px;font-size:10.5px;text-align:left;}
+  .print-table th{background:#1F3C73;color:#fff;text-transform:uppercase;font-size:9px;letter-spacing:0.3px;}
+  .print-table td.sig-cell svg{height:20px;width:60px;}
+  .print-summary{border:1px solid #999;border-radius:4px;padding:10px 12px;font-size:11.5px;margin-bottom:14px;}
+  .print-summary div{margin-bottom:4px;}
+  .print-summary b{color:#1F3C73;}
+  .print-footer{font-size:9.5px;color:#5b5f6a;border-top:1px solid #ccc;padding-top:8px;margin-top:10px;line-height:1.5;}
+
+  @media print{
+    body *{visibility:hidden;}
+    #printTemplate, #printTemplate *{visibility:visible;}
+    #printTemplate{display:block !important;position:absolute;left:0;top:0;width:100%;padding:24px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <svg class="crest" viewBox="0 0 100 75" aria-label="Wilson Manor crest">
+      <g fill="#1F3C73">
+        <rect x="20" y="14" width="14" height="34" />
+        <rect x="17" y="11" width="4" height="6"/><rect x="24" y="11" width="4" height="6"/><rect x="31" y="11" width="4" height="6"/>
+        <rect x="66" y="14" width="14" height="34" />
+        <rect x="63" y="11" width="4" height="6"/><rect x="70" y="11" width="4" height="6"/><rect x="77" y="11" width="4" height="6"/>
+        <polygon points="50,18 68,38 32,38"/>
+        <rect x="38" y="34" width="24" height="14"/>
+      </g>
+    </svg>
+    <h1>Wilson Manor Body Corporate</h1>
+    <div class="subtitle">Owners&rsquo; SGM Requisition — Live Petition</div>
+  </header>
+
+  <div class="seal-card">
+    <div class="seal">
+      <svg width="92" height="92" viewBox="0 0 92 92">
+        <circle cx="46" cy="46" r="40" fill="none" stroke="#EAE0C4" stroke-width="9"/>
+        <circle id="sealRing" cx="46" cy="46" r="40" fill="none" stroke="#A9802F" stroke-width="9"
+                stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/>
+        <circle cx="46" cy="46" r="40" fill="none" stroke="#1F3C73" stroke-width="1.5" stroke-dasharray="2 251.3"
+                transform="rotate(90 46 46) rotate(90deg, 0)" />
+      </svg>
+      <div class="seal-pct">
+        <div class="num" id="pqPctLabel">0%</div>
+        <div class="lbl">of PQ</div>
+      </div>
+    </div>
+    <div class="seal-info">
+      <div class="headline" id="sealHeadline">Gathering signatures&hellip;</div>
+      <div class="detail" id="sealDetail">0 of 0 units signed · 0% participation quota collected</div>
+      <span class="status-pill pending" id="statusPill">25% threshold not yet reached</span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="sign">Sign the Petition</button>
+    <button class="tab-btn" data-tab="organizer">Organizer</button>
+  </div>
+
+  <!-- ===================== SIGN PANEL ===================== -->
+  <div class="panel active" id="panel-sign">
+
+    <div class="card" id="setupNotice" style="display:none;">
+      <h2 style="color:var(--bad);">Petition can&rsquo;t load</h2>
+      <p class="help" id="setupNoticeText">There's a problem connecting to the database.</p>
+    </div>
+
+    <div class="card" id="noScheduleNotice" style="display:none;">
+      <h2>Petition not set up yet</h2>
+      <p class="help">The organizer hasn&rsquo;t loaded the unit / participation quota schedule yet. Ask them to open the
+      <b>Organizer</b> tab and add it, then come back to this link to sign.</p>
+    </div>
+
+    <div class="card" id="signCard" style="display:none;">
+      <h2>Add your signature</h2>
+      <p class="help">Select your unit, confirm your name, then sign below. Your unit&rsquo;s participation quota is
+      filled in automatically.</p>
+
+      <label for="unitSelect">Your unit number</label>
+      <select id="unitSelect"></select>
+
+      <div class="pq-readout" id="pqReadout">Select your unit to see its participation quota.</div>
+
+      <label for="ownerName">Full name (please print)</label>
+      <input type="text" id="ownerName" placeholder="e.g. J. van der Merwe" autocomplete="name">
+
+      <label>Signature</label>
+      <canvas id="padCanvas"></canvas>
+      <div class="pad-row">
+        <span class="hint">Draw with your finger, stylus, or mouse</span>
+        <button class="link-btn" id="clearPad">Clear</button>
+      </div>
+
+      <div id="alreadySignedNotice"></div>
+
+      <button class="btn" id="submitBtn" disabled>Add my signature</button>
+    </div>
+  </div>
+
+  <!-- ===================== ORGANIZER PANEL ===================== -->
+  <div class="panel" id="panel-organizer">
+
+    <div class="card" id="organizerGate">
+      <h2>Organizer access</h2>
+      <p class="help">This area controls the PQ schedule and lets you remove signatures, so it&rsquo;s PIN-protected.
+      Enter the organizer PIN to continue.</p>
+      <label for="pinInput">PIN</label>
+      <input type="password" id="pinInput" placeholder="Enter PIN" autocomplete="off">
+      <button class="btn" id="unlockBtn">Unlock organizer tools</button>
+      <div id="pinStatus"></div>
+    </div>
+
+    <div id="organizerContent" style="display:none;">
+
+      <div class="card">
+        <h2>1. Unit &amp; PQ schedule</h2>
+        <p class="help">Already loaded from Wilson Manor's Scheme Register — owners on the &ldquo;Sign&rdquo; tab will
+        see their unit and PQ automatically. Only edit this if a PQ changes or you need to correct an entry, then
+        click save.</p>
+        <textarea id="scheduleInput" placeholder="1, 1.85&#10;2, 1.62&#10;3, 2.10&#10;&hellip;"></textarea>
+        <button class="btn ghost" id="saveScheduleBtn">Save schedule</button>
+        <div id="scheduleStatus"></div>
+      </div>
+
+      <div class="card">
+        <h2>2. Track signatures</h2>
+        <p class="help">This list updates live as owners sign on this same link, on any device.</p>
+        <table>
+          <thead><tr><th>Unit</th><th>Owner</th><th>PQ %</th><th>Signature</th><th>Signed</th><th></th></tr></thead>
+          <tbody id="sigTableBody"><tr class="empty-row"><td colspan="6">No signatures yet</td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>3. Send to the trustees</h2>
+        <p class="help">Once you&rsquo;ve reached at least 25% of total PQ (per PMR 17(4)), copy the summary below into
+        your cover note or the printable petition, and deliver it in writing to the trustees and managing agent.</p>
+        <button class="btn ghost" id="copySummaryBtn">Copy signature summary</button>
+        <button class="btn ghost" id="printBtn">Print formal petition</button>
+        <div id="copyStatus"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <footer class="note">
+    Signatures captured here help track support in real time. Because PMR 17(4) requires a &ldquo;written and signed
+    request&rdquo;, confirm with your trustees or a sectional title attorney whether this digital record is accepted,
+    or whether wet-ink signatures on the printed petition will also be needed before delivery.
+  </footer>
+</div>
+
+<!-- ===================== FORMAL PRINT TEMPLATE ===================== -->
+<div id="printTemplate">
+  <div class="print-header">
+    <svg class="print-crest" viewBox="0 0 100 75" aria-label="Wilson Manor crest">
+      <g fill="#1F3C73">
+        <rect x="20" y="14" width="14" height="34" />
+        <rect x="17" y="11" width="4" height="6"/><rect x="24" y="11" width="4" height="6"/><rect x="31" y="11" width="4" height="6"/>
+        <rect x="66" y="14" width="14" height="34" />
+        <rect x="63" y="11" width="4" height="6"/><rect x="70" y="11" width="4" height="6"/><rect x="77" y="11" width="4" height="6"/>
+        <polygon points="50,18 68,38 32,38"/>
+        <rect x="38" y="34" width="24" height="14"/>
+      </g>
+    </svg>
+    <h1>Wilson Manor Body Corporate</h1>
+    <div class="ptitle">Owners&rsquo; Petition &amp; Written Requisition for a Special General Meeting</div>
+    <div class="pdate">Generated <span id="printGenDate"></span></div>
+  </div>
+
+  <div class="print-body">
+    <p>We, the undersigned owners of units in the Wilson Manor sectional title scheme, are dissatisfied with the
+    performance of the current managing agent and require, in terms of Prescribed Management Rule (&ldquo;PMR&rdquo;)
+    17(4) of Annexure 1 to the Sectional Titles Schemes Management Act 8 of 2011, that the trustees convene a Special
+    General Meeting (&ldquo;SGM&rdquo;) to consider and vote on the motion(s) below. In terms of PMR 17(5), these
+    motions must be included, without amendment, in the agenda for the meeting.</p>
+  </div>
+
+  <div class="print-motions">
+    <p><b>Motion 1:</b> That the body corporate terminate the appointment of the current managing agent, in accordance
+    with the notice provisions of the management agreement.</p>
+    <p style="margin-bottom:0;"><b>Motion 2:</b> That the trustees be directed to invite proposals from, and appoint,
+    a replacement managing agent, such appointment to be reported back to / ratified by owners.</p>
+  </div>
+
+  <table class="print-table">
+    <thead>
+      <tr><th>Unit</th><th>Owner Name</th><th>PQ %</th><th>Signature</th><th>Date Signed</th></tr>
+    </thead>
+    <tbody id="printSigBody"></tbody>
+  </table>
+
+  <div class="print-summary" id="printSummary"></div>
+
+  <div class="print-footer">
+    This record was compiled via the Wilson Manor digital petition tool. Because PMR 17(4) requires a written and
+    signed request, confirm with the trustees or a sectional title attorney whether this digital record is accepted
+    on its own, or whether owners should also countersign in wet ink before this is delivered to the trustees and
+    managing agent.
+  </div>
+</div>
+
+<!-- ===================== FIREBASE (shared storage backend) =====================
+     window.storage (used in the original draft) only exists inside Claude.ai's own
+     artifact preview — it does nothing on a published site. These two SDK files plus
+     the firebaseConfig block below replace it with a real, free, shared database so
+     signatures actually save and sync across every visitor's device.
+     Setup instructions are in the chat message that came with this file. -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+
+<script>
+(function(){
+  const THRESHOLD = 25;
+  const ORGANIZER_PIN = "Hk@19920126";
+  let organizerUnlocked = false;
+
+  // ---------- Firebase setup ----------
+  // Paste the config object from your own Firebase project here (see setup steps).
+  const firebaseConfig = {
+    apiKey: "PASTE_YOUR_API_KEY_HERE",
+    authDomain: "PASTE_YOUR_AUTH_DOMAIN_HERE",
+    databaseURL: "PASTE_YOUR_DATABASE_URL_HERE",
+    projectId: "PASTE_YOUR_PROJECT_ID_HERE",
+    storageBucket: "PASTE_YOUR_STORAGE_BUCKET_HERE",
+    messagingSenderId: "PASTE_YOUR_SENDER_ID_HERE",
+    appId: "PASTE_YOUR_APP_ID_HERE"
+  };
+
+  function showSetupError(msg){
+    document.getElementById("setupNoticeText").textContent = msg;
+    document.getElementById("setupNotice").style.display = "block";
+    document.getElementById("noScheduleNotice").style.display = "none";
+    document.getElementById("signCard").style.display = "none";
+  }
+
+  const isUnconfigured = Object.values(firebaseConfig).some(v => String(v).startsWith("PASTE_YOUR_"));
+  let db, scheduleRef, signaturesRef;
+
+  if(isUnconfigured){
+    showSetupError("This page hasn't been connected to a database yet. Open the HTML file, find the firebaseConfig block near the top of the script, and paste in the config values from your own Firebase project (Project settings → your web app → SDK setup and configuration).");
+  } else {
+    try{
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+      scheduleRef = db.ref("wilsonManorPetition/schedule");
+      signaturesRef = db.ref("wilsonManorPetition/signatures");
+    }catch(e){
+      showSetupError("Firebase couldn't initialize with the config provided — double-check every value in firebaseConfig was copied correctly, with no missing commas or quotes. (" + e.message + ")");
+    }
+  }
+
+  // Pre-loaded from the Wilson Manor Scheme Register — no manual setup needed.
+  const DEFAULT_SCHEDULE = {
+    "1":1.733,"2":1.733,"3":1.733,"4":1.733,"5":1.733,"6":1.733,"7":1.733,"8":1.733,"9":1.733,
+    "10":1.962,"11":1.962,"12":1.977,"13":1.977,"14":1.977,"15":1.977,"16":1.977,"17":1.977,
+    "18":1.962,"19":1.962,"20":1.962,"21":1.733,"22":1.733,"23":1.733,"24":1.733,"25":1.733,
+    "26":1.733,"27":1.733,"28":1.733,"29":1.733,"30":1.977,"31":1.977,"32":1.977,"33":1.977,
+    "34":1.962,"35":1.977,"36":1.977,"37":1.962,"38":1.733,"39":1.733,"40":1.733,"41":1.733,
+    "42":1.733,"43":1.733,"44":1.733,"45":1.733,"46":1.733,"47":1.962,"48":1.962,"49":1.962,
+    "50":1.977,"51":1.977,"52":1.977,"53":1.977,"54":1.962
+  };
+
+  let schedule = {};      // { "1": 1.85, "2": 1.62, ... }
+  let signatures = {};    // { "1": {name, path, ts} }
+
+  // ---------- storage helpers (Firebase Realtime Database) ----------
+  // saveSchedule/saveSignatures WRITE to the shared database. The actual loading is
+  // handled by the two .on("value", ...) listeners set up in the bootstrap section
+  // below, which keep `schedule` and `signatures` in sync in real time across every
+  // visitor automatically — no polling needed.
+  async function saveSchedule(obj){
+    if(!scheduleRef) throw new Error("Database not connected — finish the Firebase setup first.");
+    schedule = obj;
+    await scheduleRef.set(obj);
+  }
+  async function saveSignatures(obj){
+    if(!signaturesRef) throw new Error("Database not connected — finish the Firebase setup first.");
+    signatures = obj;
+    await signaturesRef.set(obj);
+  }
+
+  // ---------- tabs ----------
+  document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("panel-"+btn.dataset.tab).classList.add("active");
+    });
+  });
+
+  document.getElementById("unlockBtn").addEventListener("click", attemptUnlock);
+  document.getElementById("pinInput").addEventListener("keydown", (e)=>{ if(e.key==="Enter") attemptUnlock(); });
+
+  function attemptUnlock(){
+    const entered = document.getElementById("pinInput").value;
+    const status = document.getElementById("pinStatus");
+    if(entered === ORGANIZER_PIN){
+      organizerUnlocked = true;
+      document.getElementById("organizerGate").style.display = "none";
+      document.getElementById("organizerContent").style.display = "block";
+      status.innerHTML = "";
+      document.getElementById("pinInput").value = "";
+    } else {
+      status.innerHTML = `<div class="notice warn">Incorrect PIN. Try again.</div>`;
+    }
+  }
+
+  // ---------- gauge ----------
+  function totalPQ(){
+    return Object.values(schedule).reduce((a,b)=>a+Number(b||0),0);
+  }
+  function signedPQ(){
+    let sum=0;
+    Object.keys(signatures).forEach(u=>{ if(schedule[u]!==undefined) sum += Number(schedule[u]); });
+    return sum;
+  }
+  function refreshGauge(){
+    const total = totalPQ();
+    const signedSum = signedPQ();
+    const pct = total>0 ? (signedSum/total*100) : 0;
+    const circumference = 251.3;
+    const offset = circumference - (Math.min(pct,100)/100*circumference);
+    document.getElementById("sealRing").setAttribute("stroke-dashoffset", offset.toFixed(1));
+    document.getElementById("sealRing").setAttribute("stroke", pct>=THRESHOLD ? "#3D7A4F" : "#A9802F");
+    document.getElementById("pqPctLabel").textContent = pct.toFixed(1)+"%";
+
+    const unitCount = Object.keys(schedule).length;
+    const signedCount = Object.keys(signatures).filter(u=>schedule[u]!==undefined).length;
+    document.getElementById("sealDetail").textContent =
+      `${signedCount} of ${unitCount || "?"} units signed · ${pct.toFixed(1)}% participation quota collected`;
+
+    const pill = document.getElementById("statusPill");
+    const headline = document.getElementById("sealHeadline");
+    if(pct >= THRESHOLD && total>0){
+      pill.textContent = "25% threshold reached — ready to send";
+      pill.className = "status-pill reached";
+      headline.textContent = "Quorum reached!";
+    } else {
+      pill.textContent = "25% threshold not yet reached";
+      pill.className = "status-pill pending";
+      headline.textContent = "Gathering signatures…";
+    }
+  }
+
+  // ---------- sign panel ----------
+  function populateUnitSelect(){
+    const sel = document.getElementById("unitSelect");
+    const previousValue = sel.value; // remember what the visitor had selected
+    const units = Object.keys(schedule).sort((a,b)=>Number(a)-Number(b));
+    sel.innerHTML = "";
+    units.forEach(u=>{
+      const opt = document.createElement("option");
+      opt.value = u;
+      opt.textContent = "Unit "+u + (signatures[u] ? "  ✓ signed" : "");
+      sel.appendChild(opt);
+    });
+    // restore the previous selection (this is what was resetting to Unit 1 before)
+    if(previousValue && units.includes(previousValue)){
+      sel.value = previousValue;
+    }
+    onUnitChange();
+  }
+
+  function onUnitChange(){
+    const u = document.getElementById("unitSelect").value;
+    const pq = schedule[u];
+    document.getElementById("pqReadout").innerHTML = pq!==undefined
+      ? `Unit <b>${u}</b> carries a participation quota of <b>${Number(pq).toFixed(2)}%</b>.`
+      : "Select your unit to see its participation quota.";
+
+    const notice = document.getElementById("alreadySignedNotice");
+    const submitBtn = document.getElementById("submitBtn");
+    if(signatures[u]){
+      const s = signatures[u];
+      notice.innerHTML = `<div class="notice info">Unit ${u} was already signed by <b>${escapeHtml(s.name)}</b> on ${new Date(s.ts).toLocaleDateString()}.
+        Submitting again will replace that signature. <button class="link-btn" id="withdrawBtn" style="color:#9A3B3B;">Withdraw this signature instead</button></div>`;
+      document.getElementById("withdrawBtn").addEventListener("click", async ()=>{
+        const updated = {...signatures};
+        delete updated[u];
+        await saveSignatures(updated);
+        refreshAll();
+      });
+    } else {
+      notice.innerHTML = "";
+    }
+    submitBtn.disabled = false;
+  }
+
+  // ---------- signature pad ----------
+  const canvas = document.getElementById("padCanvas");
+  const ctx = canvas.getContext("2d");
+  let strokes = [];       // array of arrays of {x,y} in canvas-unit coords (0-300 x 0-150 normalized space)
+  let currentStroke = null;
+  let drawing = false;
+
+  function resizeCanvas(){
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * 2;
+    canvas.height = rect.height * 2;
+    ctx.scale(2,2);
+    redrawPad();
+  }
+  function getPos(e){
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: clientX-rect.left, y: clientY-rect.top };
+  }
+  function redrawPad(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = "#1F3C73";
+    ctx.lineWidth = 2;
+    ctx.lineJoin = "round"; ctx.lineCap = "round";
+    strokes.forEach(s=>{
+      if(s.length<2) return;
+      ctx.beginPath();
+      ctx.moveTo(s[0].x, s[0].y);
+      s.forEach(p=>ctx.lineTo(p.x,p.y));
+      ctx.stroke();
+    });
+  }
+  function startDraw(e){
+    e.preventDefault();
+    drawing = true;
+    currentStroke = [getPos(e)];
+    strokes.push(currentStroke);
+  }
+  function moveDraw(e){
+    if(!drawing) return;
+    e.preventDefault();
+    currentStroke.push(getPos(e));
+    redrawPad();
+  }
+  function endDraw(){ drawing=false; currentStroke=null; }
+
+  canvas.addEventListener("pointerdown", startDraw);
+  canvas.addEventListener("pointermove", moveDraw);
+  window.addEventListener("pointerup", endDraw);
+  window.addEventListener("resize", resizeCanvas);
+
+  document.getElementById("clearPad").addEventListener("click", ()=>{
+    strokes = []; redrawPad();
+  });
+
+  function strokesToSvgPath(){
+    // normalize to a 200x60 viewbox for compact storage + small previews
+    const rect = canvas.getBoundingClientRect();
+    const sx = 200/rect.width, sy = 60/rect.height;
+    return strokes.filter(s=>s.length>1).map(s=>{
+      return "M"+s.map(p=>(p.x*sx).toFixed(1)+","+(p.y*sy).toFixed(1)).join("L");
+    }).join(" ");
+  }
+  function renderSigSvg(path){
+    if(!path) return "<span style='color:#999;font-style:italic;'>—</span>";
+    return `<svg viewBox="0 0 200 60"><path d="${path}" fill="none" stroke="#1F3C73" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+  }
+
+  // ---------- submit ----------
+  document.getElementById("submitBtn").addEventListener("click", async ()=>{
+    const u = document.getElementById("unitSelect").value;
+    const name = document.getElementById("ownerName").value.trim();
+    const path = strokesToSvgPath();
+    const btn = document.getElementById("submitBtn");
+
+    if(!u){ alert("Please select your unit."); return; }
+    if(!name){ alert("Please enter your full name."); return; }
+    if(!path){ alert("Please sign in the box before submitting."); return; }
+
+    btn.disabled = true; btn.textContent = "Saving…";
+    try{
+      const updated = {...signatures, [u]: { name, path, ts: Date.now() }};
+      await saveSignatures(updated);
+      document.getElementById("ownerName").value = "";
+      strokes = []; redrawPad();
+      populateUnitSelect();
+      refreshGauge();
+      renderTable();
+      btn.textContent = "Signature added ✓";
+      setTimeout(()=>{ btn.textContent = "Add my signature"; btn.disabled=false; }, 1600);
+    }catch(e){
+      alert("Couldn't save your signature — please check your connection and try again.");
+      btn.disabled = false; btn.textContent = "Add my signature";
+    }
+  });
+
+  // ---------- organizer: schedule ----------
+  document.getElementById("saveScheduleBtn").addEventListener("click", async ()=>{
+    const raw = document.getElementById("scheduleInput").value;
+    const lines = raw.split("\n").map(l=>l.trim()).filter(Boolean);
+    const obj = {};
+    let bad = 0;
+    lines.forEach(line=>{
+      const parts = line.split(/[, \t]+/).filter(Boolean);
+      if(parts.length>=2){
+        const unit = parts[0].replace(/[^0-9A-Za-z\-]/g,"");
+        const pq = parseFloat(parts[1]);
+        if(unit && !isNaN(pq)) obj[unit] = pq;
+        else bad++;
+      } else if(line) bad++;
+    });
+    const status = document.getElementById("scheduleStatus");
+    if(Object.keys(obj).length===0){
+      status.innerHTML = `<div class="notice warn">No valid rows found. Use one unit per line, e.g. <code>1, 1.85</code>.</div>`;
+      return;
+    }
+    await saveSchedule(obj);
+    status.innerHTML = `<div class="notice ok">Saved ${Object.keys(obj).length} units${bad? " ("+bad+" line(s) skipped)":""}. Total PQ entered: ${totalPQ().toFixed(2)}%.</div>`;
+    refreshAll();
+  });
+
+  // ---------- organizer: table ----------
+  function renderTable(){
+    const tbody = document.getElementById("sigTableBody");
+    const units = Object.keys(signatures).sort((a,b)=>Number(a)-Number(b));
+    if(units.length===0){
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="6">No signatures yet</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = units.map(u=>{
+      const s = signatures[u];
+      const pq = schedule[u]!==undefined ? Number(schedule[u]).toFixed(2)+"%" : "—";
+      return `<tr>
+        <td>${u}</td>
+        <td>${escapeHtml(s.name)}</td>
+        <td class="num">${pq}</td>
+        <td class="sig-cell">${renderSigSvg(s.path)}</td>
+        <td>${new Date(s.ts).toLocaleDateString()}</td>
+        <td><button class="link-btn" data-remove="${u}" style="color:#9A3B3B;">Remove</button></td>
+      </tr>`;
+    }).join("");
+    tbody.querySelectorAll("[data-remove]").forEach(b=>{
+      b.addEventListener("click", async ()=>{
+        const u = b.dataset.remove;
+        const updated = {...signatures};
+        delete updated[u];
+        await saveSignatures(updated);
+        refreshAll();
+      });
+    });
+  }
+
+  // ---------- organizer: copy / print ----------
+  document.getElementById("copySummaryBtn").addEventListener("click", async ()=>{
+    const units = Object.keys(signatures).sort((a,b)=>Number(a)-Number(b));
+    const total = totalPQ(), signed = signedPQ();
+    const pct = total>0 ? (signed/total*100) : 0;
+    let text = `Wilson Manor Body Corporate — SGM Owners' Petition Summary\n`;
+    text += `Generated: ${new Date().toLocaleString()}\n`;
+    text += `Signatures collected: ${units.length}\n`;
+    text += `Participation quota represented: ${signed.toFixed(2)}% of ${total.toFixed(2)}% total (${pct.toFixed(1)}% of scheme)\n`;
+    text += `Threshold (25% PQ, per PMR 17(4)): ${pct>=25 ? "REACHED" : "NOT YET REACHED"}\n\n`;
+    text += `Unit\tOwner\tPQ %\tDate\n`;
+    units.forEach(u=>{
+      text += `${u}\t${signatures[u].name}\t${schedule[u]!==undefined?Number(schedule[u]).toFixed(2):"—"}\t${new Date(signatures[u].ts).toLocaleDateString()}\n`;
+    });
+    try{
+      await navigator.clipboard.writeText(text);
+      document.getElementById("copyStatus").innerHTML = `<div class="notice ok">Summary copied to clipboard.</div>`;
+    }catch(e){
+      document.getElementById("copyStatus").innerHTML = `<div class="notice warn">Couldn't copy automatically — select the text manually from the table above.</div>`;
+    }
+  });
+  document.getElementById("printBtn").addEventListener("click", ()=>{
+    populatePrintTemplate();
+    window.print();
+  });
+
+  function populatePrintTemplate(){
+    const units = Object.keys(signatures).sort((a,b)=>Number(a)-Number(b));
+    const total = totalPQ(), signed = signedPQ();
+    const pct = total>0 ? (signed/total*100) : 0;
+
+    document.getElementById("printGenDate").textContent = new Date().toLocaleString();
+
+    const body = document.getElementById("printSigBody");
+    if(units.length===0){
+      body.innerHTML = `<tr><td colspan="5" style="text-align:center;font-style:italic;">No signatures recorded yet</td></tr>`;
+    } else {
+      body.innerHTML = units.map(u=>{
+        const s = signatures[u];
+        const pq = schedule[u]!==undefined ? Number(schedule[u]).toFixed(2)+"%" : "—";
+        return `<tr>
+          <td>${u}</td>
+          <td>${escapeHtml(s.name)}</td>
+          <td>${pq}</td>
+          <td class="sig-cell">${renderSigSvg(s.path)}</td>
+          <td>${new Date(s.ts).toLocaleDateString()}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    document.getElementById("printSummary").innerHTML = `
+      <div>Total signatures collected: <b>${units.length}</b> of ${Object.keys(schedule).length} units</div>
+      <div>Participation quota represented: <b>${signed.toFixed(2)}%</b> of ${total.toFixed(2)}% total scheme PQ</div>
+      <div>25% PQ threshold (PMR 17(4)): <b>${pct>=THRESHOLD ? "REACHED — ready to deliver to trustees" : "NOT YET REACHED"}</b></div>
+    `;
+  }
+
+
+  function escapeHtml(s){
+    return s.replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+  }
+
+  document.getElementById("unitSelect").addEventListener("change", onUnitChange);
+
+  // ---------- bootstrap ----------
+  // refreshAll() re-renders the UI from whatever is currently in `schedule` /
+  // `signatures`. It no longer fetches anything itself — the two Firebase listeners
+  // below keep those variables live and call this whenever the data changes,
+  // anywhere, on anyone's device.
+  function refreshAll(){
+    const has = Object.keys(schedule).length>0;
+    document.getElementById("noScheduleNotice").style.display = has ? "none" : "block";
+    document.getElementById("signCard").style.display = has ? "block" : "none";
+    document.getElementById("scheduleInput").value = Object.keys(schedule).sort((a,b)=>Number(a)-Number(b)).map(u=>u+", "+schedule[u]).join("\n");
+    if(has) populateUnitSelect();
+    refreshGauge();
+    renderTable();
+  }
+
+  resizeCanvas();
+
+  if(scheduleRef && signaturesRef){
+    // Live sync: fires immediately on load, then again any time the data changes
+    // (e.g. another owner signs on their own phone) — no polling delay.
+    scheduleRef.on("value", (snap)=>{
+      const val = snap.val();
+      if(val && Object.keys(val).length>0){
+        schedule = val;
+      } else if(Object.keys(schedule).length===0){
+        schedule = DEFAULT_SCHEDULE;
+        scheduleRef.set(schedule).catch(()=>{});
+      }
+      refreshAll();
+    }, (err)=>{
+      showSetupError("Couldn't reach the database (" + err.code + "). This is almost always the Realtime Database security rules — open your Firebase project, go to Realtime Database → Rules, and make sure they're published exactly as given in the setup steps (read/write true under \"wilsonManorPetition\"). Also confirm you created a Realtime Database, not Firestore.");
+    });
+
+    signaturesRef.on("value", (snap)=>{
+      signatures = snap.val() || {};
+      refreshAll();
+    }, (err)=>{
+      showSetupError("Couldn't reach the database (" + err.code + "). This is almost always the Realtime Database security rules — open your Firebase project, go to Realtime Database → Rules, and make sure they're published exactly as given in the setup steps (read/write true under \"wilsonManorPetition\"). Also confirm you created a Realtime Database, not Firestore.");
+    });
+  }
+})();
+</script>
+</body>
+</html>
